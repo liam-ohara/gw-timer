@@ -41,7 +41,7 @@
 1000 CLS
 1010 LMARGIN% = (80 - LEN(TITLE$)) / 2
 1020 LOCATE 1, LMARGIN% : PRINT TITLE$
-1030 OPENMODE$ = "Save record to existing file. Press (O) to open or (C) to cancel."
+1030 OPENMODE$ = "Save record to existing file. Press (O) to open or (C) to cancel."+CHR$(13)
 1040 LOCATE 2, 1 : PRINT OPENMODE$
 1050 ISWAITING% = 1
 1060 WHILE ISWAITING%
@@ -51,11 +51,11 @@
 1079 WEND
 1080 IF KEYPRESS$ = "O" OR KEYPRESS$ = "o" THEN GOTO 1090 ELSE GOTO 1
 1090 INPUT "Please enter filename (witout extension) and hit ENTER: ", FILENAME$
-1091 IF LEN(FILENAME$) > 8 THEN PRINT "Filename must be <= 8 characters. Please retry.": GOTO 1090
-1092 IF LEN(FILENAME$) < 1 THEN PRINT "Filename cannot be empty. Please retry.": GOTO 1090
-1095 PRINT FILENAME$
-1100 FILENAME$ = FILENAME$ + ".swd"
-1110 OPEN "I",#1,FILENAME$
+1100 IF LEN(FILENAME$) > 8 THEN PRINT CHR$(13)+"Filename must be <= 8 characters. Please retry.": GOTO 1090
+1110 IF LEN(FILENAME$) < 1 THEN PRINT CHR$(13)+"Filename cannot be empty. Please retry.": GOTO 1090
+1120 FILENAME$ = FILENAME$ + ".swd"
+1200 OPEN "I",#1,FILENAME$
+1210 PRINT CHR$(13)+FILENAME$+" found."+CHR$(13)
 1300 TRUE% = 1
 1310 TOTALROWS% = 0
 1320 WHILE TRUE%
@@ -69,9 +69,9 @@
 1420 FIELD #2,12 AS DATECOL$,9 AS TIMECOL$,9 AS DURATIONCOL$,50 AS NOTECOL$
 1600 NOTE$ = ""
 1610 INPUT "Please enter a note for your record (50 characters max.): ", NOTE$
-1620 IF LEN(NOTE$) > 50 THEN PRINT "Filename must be <= 50 characters. Please retry.": GOTO 1610
-1700 PRINT "NOTE: " + NOTE$
-1710 PRINT "Confirm whether note is correct [Y/N]"
+1620 IF LEN(NOTE$) > 50 THEN PRINT CHR$(13)+"Filename must be <= 50 characters. Please retry.": GOTO 1610
+1700 PRINT CHR$(13)+"NOTE: " + NOTE$
+1710 PRINT CHR$(13)+"Confirm whether note is correct [Y/N]"
 1720 ISWAITING% = 1
 1730 WHILE ISWAITING%
 1740 KEYPRESS$ = INKEY$
@@ -85,8 +85,9 @@
 1820 LSET DURATIONCOL$ = DURATION$
 1830 LSET NOTECOL$ = NOTE$
 1900 PUT #2, (TOTALROWS%+1)
-2000 PRINT "Record saved to file '" + FILENAME$ + "'."
-2100 PRINT "Press any character key to return to stopwatch."
+1910 CLOSE #2
+2000 PRINT CHR$(13)+"Record saved to file '" + FILENAME$ + "'."
+2100 PRINT CHR$(13)+"Press any character key to return to stopwatch."
 2110 ISWAITING% = 1
 2120 KEYPRESS$ = ""
 2120 WHILE ISWAITING%
@@ -95,15 +96,15 @@
 2150 WEND
 2160 CHAIN "timer.bas"
 2170 END
-5000 INPUT "Please enter filename (witout extension) and hit ENTER: ", FILENAME$
-5010 IF LEN(FILENAME$) > 8 THEN PRINT "Filename must be < 8 characters. Please retry.": GOTO 5000
-5015 IF LEN(FILENAME$) < 1 THEN PRINT "Filename cannot be empty. Please retry.": GOTO 5000
-5020 PRINT FILENAME$
-5030 FILENAME$ = FILENAME$ + ".swd"
+5000 CLS
+5010 INPUT "Please enter filename (witout extension) and hit ENTER: ", FILENAME$
+5020 IF LEN(FILENAME$) > 8 THEN PRINT CHR$(13)+"Filename must be < 8 characters. Please retry.": GOTO 5000
+5030 IF LEN(FILENAME$) < 1 THEN PRINT CHR$(13)+"Filename cannot be empty. Please retry.": GOTO 5000
+5040 FILENAME$ = FILENAME$ + ".swd"
 5100 OPEN "R",#2,FILENAME$,80
-5110 PRINT "New file with filename: '" + FILENAME$ + "' created."
+5110 PRINT CHR$(13)+"New file with filename: '" + FILENAME$ + "' created."
 5120 CLOSE #2
-5130 GOTO 1110
+5130 GOTO 1200
 7000 FIELD #2,11 AS DATECOL$,9 AS TIMECOL$,9 AS DURATIONCOL$,51 AS NOTECOL$
 7010 LSET DATECOL$ = "DATE;"
 7020 LSET TIMECOL$ = "TIME;"
@@ -115,7 +116,8 @@
 20000 PRINT "ERROR #"; : PRINT ERR; : PRINT " caught on line #"; : PRINT ERL
 20005 IF ERR = 53 THEN PRINT "File '" + FILENAME$ + "' not found."
 20007 IF ERR = 62 THEN RESUME 1380
-20010 PRINT "Do you want to create a new file with filename '" + FILENAME$ + "'? [Y/N]"
+20008 IF ERR = 55 THEN RESUME ERL
+20010 PRINT CHR$(13)+"Do you want to create a new file with filename '" + FILENAME$ + "'? [Y/N]"
 20060 ISWAITING% = 1
 20070 WHILE ISWAITING%
 20072 KEYPRESS$ = INKEY$
