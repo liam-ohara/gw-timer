@@ -58,3 +58,9 @@ Screenshot of stopwatch awaiting the start command, either on first run or after
 
 Screenshot of stopwatch running or stopped.
 ![Screenshot of stopwatch running / stopped](/screenshots/running.png "Stopwatch running / stopped")
+
+Screenshot of memo feature initial screen.
+![Screenshot of memo feature initial screen](/screenshots/t-memo-first-scrn.png "Memo feature")
+
+Screenshot of save procedure.
+![Screenshot of save procedure](/screenshots/save_procedure.png "Save procedure")
